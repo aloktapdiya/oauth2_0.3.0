@@ -1,0 +1,75 @@
+flyway-password: root
+flyway-user: root
+app-user: root
+db-url: jdbc:mariadb://localhost:3306/oauth2
+app-password: root
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+    org.springframework.boot.autoconfigure: DEBUG
+spring:
+  application:
+    name: security_template
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080
+  client:
+    registration:
+      messaging-client-oidc:
+        provider: spring
+        client-id: client
+        client-secret: secret
+        authorization-grant-type: authorization_code
+        redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/{registrationId}"
+        scope: openid, profile
+        client-name: messaging-client-oidc
+      messaging-client-authorization-code:
+        provider: spring
+        client-id: client
+        client-secret: secret
+        authorization-grant-type: authorization_code
+        redirect-uri: "http://127.0.0.1:8080/authorized"
+        scope: message.read,message.write
+        client-name: messaging-client-authorization-code
+      messaging-client-client-credentials:
+        provider: spring
+        client-id: client
+        client-secret: secret
+        authorization-grant-type: client_credentials
+        scope: message.read,message.write
+        client-name: messaging-client-client-credentials
+      provider:
+        spring:
+          issuer-uri: http://localhost:8080      
+       
+#      google-idp:
+#        provider:
+#        client-id:
+#        client-secret:
+#        scope:
+#        client-name:
+#      provider:
+#          google:  
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    hibernate:
+      ddl-auto: create
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  datasource:
+    password: ${app-password}
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: ${app-user}
+    hikari:
+      maxLifeTime: '600000'
+    url: ${db-url}
